@@ -13,6 +13,9 @@ from requests.auth import HTTPBasicAuth
 from circleci.error import BadKeyError, BadVerbError, InvalidFilterError
 
 
+_V2_API_URL = 'https://circleci.com/api/v2'
+
+
 class Api():
     """A python interface into the CircleCI API"""
 
@@ -26,6 +29,25 @@ class Api():
         """
         self.token = token
         self.url = url
+        self.v2_url = _V2_API_URL
+
+    def get_workflow(self, workflow_id):
+        """Return summary fields of a workflow by ID. Preview API v2.
+
+        Endpoint:
+            GET: ``/workflow/{id}``
+        """
+        endpoint = 'workflow/{0}'.format(workflow_id)
+        return self._request('GET', endpoint, is_v2_api=True)
+
+    def get_workflow_jobs(self, workflow_id):
+        """Return all the known jobs of a given workflow. Preview API v2.
+
+        Endpoint:
+            GET: ``/workflow/{id}/jobs``
+        """
+        endpoint = 'workflow/{0}/jobs'.format(workflow_id)
+        return self._request('GET', endpoint, is_v2_api=True)
 
     def get_user_info(self):
         """Provides information about the signed in user.
@@ -668,14 +690,16 @@ class Api():
 
         return resp
 
-    def _request(self, verb, endpoint, data=None):
+    def _request(self, verb, endpoint, data=None, is_v2_api=False):
         """Request a url.
 
-        :param endpoint: The api endpoint we want to call.
         :param verb: POST, GET, or DELETE.
-        :param params: Optional build parameters.
+        :param endpoint: The api endpoint we want to call.
+        :param data: Optional POST data.
+        :param is_v2_api: Optional indicator denoting v1.1 or v2 API method.
 
-        :type params: dict
+        :type data: dict
+        :type is_v2_api: bool
 
         :raises requests.exceptions.HTTPError: When response code is not successful.
 
@@ -688,7 +712,8 @@ class Api():
         auth = HTTPBasicAuth(self.token, '')
         resp = None
 
-        request_url = "{0}/{1}".format(self.url, endpoint)
+        base_url = self.v2_url if is_v2_api else self.url
+        request_url = "{0}/{1}".format(base_url, endpoint)
 
         if verb == 'GET':
             resp = requests.get(request_url, auth=auth, headers=headers)

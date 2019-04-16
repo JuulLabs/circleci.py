@@ -29,6 +29,17 @@ class TestCircleCIApi(unittest.TestCase):
         self.assertEqual('BAD', e.exception.argument)
         self.assertIn('DELETE', e.exception.message)
 
+    def test_get_workflow(self):
+        self.loadMock('mock_get_workflow_response')
+        print(self.c.get_workflow('foo'))
+        resp = json.loads(self.c.get_workflow('dummy-workflow-id'))
+        self.assertEqual(resp['status'], 'running')
+
+    def test_get_workflow_jobs(self):
+        self.loadMock('mock_get_workflow_jobs_response')
+        resp = json.loads(self.c.get_workflow_jobs('dummy-workflow-id'))
+        self.assertEqual(len(resp['jobs']), 2)
+
     def test_get_user_info(self):
         self.loadMock('mock_user_info_response')
         resp = json.loads(self.c.get_user_info())

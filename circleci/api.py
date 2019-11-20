@@ -46,7 +46,7 @@ class Api():
         Endpoint:
             GET: ``/workflow/{id}/jobs``
         """
-        endpoint = 'workflow/{0}/jobs'.format(workflow_id)
+        endpoint = 'workflow/{0}/job'.format(workflow_id)
         return self._request('GET', endpoint, is_v2_api=True)
 
     def get_user_info(self):

@@ -44,7 +44,7 @@ class Api():
         """Return all the known jobs of a given workflow. Preview API v2.
 
         Endpoint:
-            GET: ``/workflow/{id}/jobs``
+            GET: ``/workflow/{id}/job``
         """
         endpoint = 'workflow/{0}/job'.format(workflow_id)
         return self._request('GET', endpoint, is_v2_api=True)

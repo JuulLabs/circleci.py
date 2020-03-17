@@ -29,6 +29,12 @@ class TestCircleCIApi(unittest.TestCase):
         self.assertEqual('BAD', e.exception.argument)
         self.assertIn('DELETE', e.exception.message)
 
+    def test_get_pipeline(self):
+        self.loadMock('mock_get_pipeline_response')
+        print(self.c.get_pipeline('foo'))
+        resp = json.loads(self.c.get_pipeline('dummy-pipeline-id'))
+        self.assertEqual(resp['state'], 'created')
+
     def test_get_workflow(self):
         self.loadMock('mock_get_workflow_response')
         print(self.c.get_workflow('foo'))

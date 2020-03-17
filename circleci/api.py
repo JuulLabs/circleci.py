@@ -31,6 +31,15 @@ class Api():
         self.url = url
         self.v2_url = _V2_API_URL
 
+    def get_pipeline(self, pipeline_id):
+        """Return pipeline attributes by ID. Preview API v2.
+
+        Endpoint:
+            GET: ``/pipeline/{pipeline_id}``
+        """
+        endpoint = 'pipeline/{0}'.format(pipeline_id)
+        return self._request('GET', endpoint, is_v2_api=True)
+
     def get_workflow(self, workflow_id):
         """Return summary fields of a workflow by ID. Preview API v2.
 
